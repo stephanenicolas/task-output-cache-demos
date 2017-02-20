@@ -71,7 +71,7 @@ Currently Gradle's HTTP backend supports only HTTP Basic authentication. You can
 ```groovy
 buildCache {
 	remote(org.gradle.caching.http.HttpBuildCache) {
-		url = http://example.com/"
+		url = "http://example.com/"
 		credentials {
 			username = "username"
 			password = "password"
