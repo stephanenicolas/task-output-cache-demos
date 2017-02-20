@@ -4,10 +4,6 @@ This scenario demonstrates the use of an HTTP cache backend service. You can use
 
 Gradle comes with built-in support for HTTP cache backends.
 
-### Limitations
-
-* The built-in HTTP cache implementation doesn't yet support configuring authentication.
-
 ## Preparations
 
 We'll need an HTTP server that is capable of storing files uploaded via `PUT` requests.
@@ -33,13 +29,13 @@ You can also use any other HTTP server as long as it supports uploading binaries
 
 ## Running builds using the backend
 
-We'll be using the [`init-http.gradle`](http-test/init-http.gradle) init script to configure Gradle to use our HTTP backend. The URL to the cache is passed via the `org.gradle.cache.tasks.http.uri` system property. Note that the URI's path must end in `/`.
+The HTTP cache is already pre-configured in [`settings.gradle`](http-test/settings.gradle). You can override the URL to the cache via `-Dcache.url=...`. Note that the URL's path must end in `/`.
 
-In the below examples we are assuming you set up the Docker container locally. If that's not the case make sure the URI points to the HTTP server. You can use `http://username:password@example.com/`-style URIs to specify HTTP Basic credentials.
+In the below examples we are assuming you set up the Docker container locally. If that's not the case make sure the URI points to the HTTP server.
 
 ```text
 $ cd http-test
-$ ./gradlew -Dorg.gradle.cache.tasks=true -I init-http.gradle -Dorg.gradle.cache.tasks.http.uri=http://localhost:8885/ clean run
+$ ./gradlew -Dorg.gradle.cache.tasks=true clean run
 Task output caching is an incubating feature.
 :clean
 :compileJava
@@ -56,7 +52,7 @@ At this time, the results of `:compileJava` and `:jar` were stored in the cache.
 Let's run the build again:
 
 ```text
-$ ./gradlew -Dorg.gradle.cache.tasks=true -I init-http.gradle -Dorg.gradle.cache.tasks.http.uri=http://localhost:8885/ clean run
+$ ./gradlew -Dorg.gradle.cache.tasks=true clean run
 Task output caching is an incubating feature.
 :clean
 :compileJava FROM-CACHE
@@ -67,6 +63,22 @@ Hello World!
 ```
 
 Notice how `:compileJava` is now `FROM-CACHE`.
+
+## Specifying credentials
+
+Currently Gradle's HTTP backend supports only HTTP Basic authentication. You can use `http://username:password@example.com/`-style URIs to specify HTTP Basic credentials, or you can pass them via `settings.gradle` like this:
+
+```groovy
+buildCache {
+	remote(org.gradle.caching.http.HttpBuildCache) {
+		url = ...
+		credentials {
+			username = ...
+			password = ...
+		}
+	}
+}
+```
 
 
 ## Troubleshooting

@@ -4,7 +4,7 @@
 
 This scenario demonstrates the use of a cache backend service. The first part of the scenario demonstrates using the backend service locally. The second part shows how it works when the backend is accessed from builds running on different hosts.
 
-We are going to use a [Hazelcast](http://hazelcast.org) node as the cache backend. An [init-script plugin](https://docs.gradle.org/current/userguide/init_scripts.html#N14C1D) implements the connection between the Gradle build tool and the Hazelcast node. This init-script plugin is not part of the Gradle distribution, but is a standalone plugin that lives in the [`gradle-hazelcast-plugin` repository](https://github.com/gradle/gradle-hazelcast-plugin). It also serves as the reference implementation for Gradle cache backend support. Plugins supporting other backends (like Redis, Varnish etc.) can be created in a similar way by implementing the `TaskOutputCacheFactory` interface like [it is done in the Hazelcast plugin](https://github.com/gradle/gradle-hazelcast-plugin/blob/6f1c5ab64e6d9cad2a15fda26d994e4e07d9a51c/src/main/java/org/gradle/cache/tasks/hazelcast/HazelcastPlugin.java).
+We are going to use a [Hazelcast](http://hazelcast.org) node as the cache backend. An [settings](https://docs.gradle.org/current/dsl/org.gradle.api.initialization.Settings.html) implements the connection between the Gradle build tool and the Hazelcast node. This plugin is not part of the Gradle distribution, but is a standalone plugin that lives in the [`gradle-hazelcast-plugin` repository](https://github.com/gradle/gradle-hazelcast-plugin). It also serves as the reference implementation for Gradle cache backend support. Plugins supporting other backends (like Redis, Varnish etc.) can be created in a similar way by implementing the `BuildCacheServiceFactory` interface like [it is done in the Hazelcast plugin](https://github.com/gradle/gradle-hazelcast-plugin/blob/0.6/src/main/java/org/gradle/caching/hazelcast/HazelcastPlugin.java).
 
 Hazelcast itself is an in-memory data store, so it will only keep track of the cached data as long as the Hazelcast node itself is running. This makes it easy to discard the cached data when needed by restarting the node. Hazelcast can work as a distributed cache with nodes talking to each other. For this scenario, we are going to create a centralized cache service with a single standalone node. **NOTE:** This sample is fine for simple testing, but the Hazelcast node will drop data when it reaches capacity. For real world usage, the local cache, a distributed Hazelcast system or the HTTP backed cache are better solutions.
 
@@ -37,13 +37,13 @@ We are now ready to use the cache!
 
 ## Testing locally
 
-The configuration for task caching now happens in an init-script under [`hazelcast-test/init-hazelcast.gradle`](hazelcast-test/init-hazelcast.gradle). It applies the [`gradle-hazelcast-plugin`](https://github.com/gradle/gradle-hazelcast-plugin) which enables task output caching via a Hazelcast backend.
+The configuration for task caching now happens in the [`hazelcast-test/settings.gradle`](hazelcast-test/settings.gradle). It applies the [`gradle-hazelcast-plugin`](https://github.com/gradle/gradle-hazelcast-plugin) which enables task output caching via a Hazelcast backend.
 
 Let's run the build on the same machine. The default settings should work fine:
 
 ```text
 $ cd hazelcast-test
-$ ./gradlew -Dorg.gradle.cache.tasks=true -I init-hazelcast.gradle clean run
+$ ./gradlew -Dorg.gradle.cache.tasks=true clean run
 Task output caching is an incubating feature.
 :clean
 :compileJava
@@ -60,7 +60,7 @@ At this time, the results of `:compileJava` and `:jar` were stored in the cache.
 Let's run the build again:
 
 ```text
-$ ./gradlew -Dorg.gradle.cache.tasks=true -I init-hazelcast.gradle clean run
+$ ./gradlew -Dorg.gradle.cache.tasks=true clean run
 Task output caching is an incubating feature.
 :clean
 :compileJava FROM-CACHE
@@ -75,12 +75,12 @@ Notice how `:compileJava` is now `FROM-CACHE`.
 
 ## Using the cache from a different host
 
-Let's try to use the stored results from another computer. We're going to specify the Hazelcast node's host via `org.gradle.cache.tasks.hazelcast.host`. When started, the Hazelcast server will print its IP address.
+Let's try to use the stored results from another computer. We're going to specify the Hazelcast node's host via the `org.gradle.caching.hazelcast.host` system property. When started, the Hazelcast server will print its IP address.
 
 Let's run the same build from a different machine:
 
 ```text
-$ ./gradlew -Dorg.gradle.cache.tasks=true -Dorg.gradle.cache.tasks.hazelcast.host=192.168.1.7 -I init-hazelcast.gradle clean run
+$ ./gradlew -Dorg.gradle.cache.tasks=true -Dorg.gradle.caching.hazelcast.host=192.168.1.7 clean run
 Task output caching is an incubating feature.
 :clean
 :compileJava FROM-CACHE
@@ -89,6 +89,14 @@ Task output caching is an incubating feature.
 :run
 Hello World!
 ```
+You can also specify the host of the Hazecalst service via the `settings.gradle`:
+
+```groovy
+remote(org.gradle.caching.hazelcast.HazelcastBuildCache) {
+    host = "192.168.1.7"
+    port = 5701
+}
+```
 
 ### Troubleshooting
 
@@ -96,7 +104,7 @@ If running from different computers does not have the desired result (i.e. `:com
 
 ### Changing the Hazelcast TCP port
 
-It is also possible to set the TCP port used explicitly via the `org.gradle.cache.tasks.hazelcast.port` property (the default is `5701`):
+It is also possible to set the TCP port used explicitly via the `org.gradle.caching.hazelcast.port` property (the default is `5701`):
 
 ```text
 $ hazelcast-server/build/install/hazelcast-server/bin/hazelcast-server run --port 5710

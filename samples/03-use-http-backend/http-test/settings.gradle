@@ -1,0 +1,7 @@
+import org.gradle.caching.http.HttpBuildCache
+
+buildCache {
+  remote(HttpBuildCache) {
+  	url = System.getProperty("cache.url", "http://localhost:8885/")
+  }
+}

@@ -1,5 +1,0 @@
-import org.gradle.caching.http.internal.HttpBuildCacheFactory
-
-gradle.buildCache {
-  useCacheFactory(new HttpBuildCacheFactory())
-}
