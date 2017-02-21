@@ -95,10 +95,10 @@ Notice that `:compileJava` is now `FROM-CACHE`, i.e. it is loaded from the cache
 Check the contents of the cache:
 
 ```text
-$ ls ~/.gradle/caches/3.5-20170220063018+0000/build-cache                                                                                                  !10272
+$ ls ~/.gradle/caches/3.5-20170220063018+0000/build-cache
 7ed15df58baa8d05eede356acc8bb12d build-cache.lock
 
-$ tar -tvf ~/.gradle/caches/3.5-20170220063018+0000/build-cache/7ed15df58baa8d05eede356acc8bb12d                                                           !10273
+$ tar -tvf ~/.gradle/caches/3.5-20170220063018+0000/build-cache/7ed15df58baa8d05eede356acc8bb12d
   -rw-r--r--  0 0      0         388 21 Feb 15:08 METADATA
   drwxr-xr-x  0 0      0           0 21 Feb 15:08 property-destinationDir/
   -rw-r--r--  0 0      0         519 21 Feb 15:08 property-destinationDir/Hello.class
