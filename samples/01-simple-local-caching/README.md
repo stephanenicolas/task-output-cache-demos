@@ -95,11 +95,11 @@ Notice that `:compileJava` is now `FROM-CACHE`, i.e. it is loaded from the cache
 Check the contents of the cache:
 
 ```text
-$ ls ~/.gradle/task-cache/
+$ ls ~/.gradle/caches/3.5-20170220063018+0000/task-cache/
 e19b127fa94b0ee3e1464408dec0ddfd
 
-$ unzip -l ~/.gradle/task-cache/e19b127fa94b0ee3e1464408dec0ddfd
-Archive:  ~/.gradle/task-cache/e19b127fa94b0ee3e1464408dec0ddfd
+$ unzip -l ~/.gradle/caches/3.5-20170220063018+0000/task-cache/e19b127fa94b0ee3e1464408dec0ddfd
+Archive:  ~/.gradle/caches/3.5-20170220063018+0000/task-cache/e19b127fa94b0ee3e1464408dec0ddfd
   Length     Date   Time    Name
  --------    ----   ----    ----
         0  07-22-16 22:43   property-dependencyCacheDir/
