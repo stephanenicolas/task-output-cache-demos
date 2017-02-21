@@ -9,7 +9,7 @@ Build project, run application:
 ```text
 $ ./gradlew run
 :compileJava
-:processResources UP-TO-DATE
+:processResources NO-SOURCE
 :classes
 :run
 Hello World!
@@ -20,7 +20,7 @@ Run it again without changes (`:compileJava` will not be executed):
 ```text
 $ ./gradlew run
 :compileJava UP-TO-DATE
-:processResources UP-TO-DATE
+:processResources NO-SOURCE
 :classes UP-TO-DATE
 :run
 Hello World!
@@ -38,7 +38,7 @@ Re-run again (notice that `:compileJava` is re-executed):
 ```text
 $ ./gradlew run
 :compileJava
-:processResources UP-TO-DATE
+:processResources NO-SOURCE
 :classes
 :run
 Hello World!
@@ -63,9 +63,9 @@ Build project with cache enabled, run application:
 
 ```text
 $ ./gradlew -Dorg.gradle.cache.tasks=true run
-Task output caching is an incubating feature.
+Using a local build cache (~/.gradle/caches/3.5-20170220063018+0000/build-cache) is an incubating feature.
 :compileJava
-:processResources UP-TO-DATE
+:processResources NO-SOURCE
 :classes
 :run
 Hello World!
@@ -82,9 +82,9 @@ And if we rebuild again with cache enabled:
 
 ```text
 $ ./gradlew -Dorg.gradle.cache.tasks=true run
-Task output caching is an incubating feature.
+Using a local build cache (~/.gradle/caches/3.5-20170220063018+0000/build-cache) is an incubating feature.
 :compileJava FROM-CACHE
-:processResources UP-TO-DATE
+:processResources NO-SOURCE
 :classes UP-TO-DATE
 :run
 Hello World!
@@ -95,16 +95,11 @@ Notice that `:compileJava` is now `FROM-CACHE`, i.e. it is loaded from the cache
 Check the contents of the cache:
 
 ```text
-$ ls ~/.gradle/caches/3.5-20170220063018+0000/task-cache/
-e19b127fa94b0ee3e1464408dec0ddfd
+$ ls ~/.gradle/caches/3.5-20170220063018+0000/build-cache                                                                                                  !10272
+7ed15df58baa8d05eede356acc8bb12d build-cache.lock
 
-$ unzip -l ~/.gradle/caches/3.5-20170220063018+0000/task-cache/e19b127fa94b0ee3e1464408dec0ddfd
-Archive:  ~/.gradle/caches/3.5-20170220063018+0000/task-cache/e19b127fa94b0ee3e1464408dec0ddfd
-  Length     Date   Time    Name
- --------    ----   ----    ----
-        0  07-22-16 22:43   property-dependencyCacheDir/
-        0  07-22-16 22:43   property-destinationDir/
-      519  07-22-16 22:43   property-destinationDir/Hello.class
- --------                   -------
-      519                   3 files
+$ tar -tvf ~/.gradle/caches/3.5-20170220063018+0000/build-cache/7ed15df58baa8d05eede356acc8bb12d                                                           !10273
+  -rw-r--r--  0 0      0         388 21 Feb 15:08 METADATA
+  drwxr-xr-x  0 0      0           0 21 Feb 15:08 property-destinationDir/
+  -rw-r--r--  0 0      0         519 21 Feb 15:08 property-destinationDir/Hello.class
 ```
