@@ -49,7 +49,7 @@ Hello World!
 Empty the local cache directory:
 
 ```text
-$ rm -rf ~/.gradle/task-cache
+$ rm -rf ~/.gradle/caches/3.6-20170314000035+0000/build-cache
 ```
 
 Destroy incremental build state:
@@ -62,8 +62,9 @@ $ ./gradlew clean
 Build project with cache enabled, run application:
 
 ```text
-$ ./gradlew -Dorg.gradle.cache.tasks=true run
-Using a local build cache (~/.gradle/caches/3.5-20170220063018+0000/build-cache) is an incubating feature.
+$ ./gradlew --build-cache run
+Build cache is an incubating feature.
+Using directory (~/.gradle/caches/3.6-20170314000035+0000/build-cache) as local build cache, push is enabled.
 :compileJava
 :processResources NO-SOURCE
 :classes
@@ -81,8 +82,9 @@ $ ./gradlew clean
 And if we rebuild again with cache enabled:
 
 ```text
-$ ./gradlew -Dorg.gradle.cache.tasks=true run
-Using a local build cache (~/.gradle/caches/3.5-20170220063018+0000/build-cache) is an incubating feature.
+$ ./gradlew --build-cache run
+Build cache is an incubating feature.
+Using directory (~/.gradle/caches/3.6-20170314000035+0000/build-cache) as local build cache, push is enabled.
 :compileJava FROM-CACHE
 :processResources NO-SOURCE
 :classes UP-TO-DATE
@@ -95,11 +97,11 @@ Notice that `:compileJava` is now `FROM-CACHE`, i.e. it is loaded from the cache
 Check the contents of the cache:
 
 ```text
-$ ls ~/.gradle/caches/3.5-20170220063018+0000/build-cache
-7ed15df58baa8d05eede356acc8bb12d build-cache.lock
+$ ls ~/.gradle/caches/3.6-20170314000035+0000/build-cache
+1930b2951f52485ad95c7064087e8301 build-cache.lock
 
-$ tar -tvf ~/.gradle/caches/3.5-20170220063018+0000/build-cache/7ed15df58baa8d05eede356acc8bb12d
-  -rw-r--r--  0 0      0         388 21 Feb 15:08 METADATA
-  drwxr-xr-x  0 0      0           0 21 Feb 15:08 property-destinationDir/
-  -rw-r--r--  0 0      0         519 21 Feb 15:08 property-destinationDir/Hello.class
+$ tar -tvf ~/.gradle/caches/3.6-20170314000035+0000/build-cache/1930b2951f52485ad95c7064087e8301
+  -rw-r--r-- 0/0             370 2017-03-14 18:57 METADATA
+  drwxr-xr-x 0/0               0 2017-03-14 18:57 property-destinationDir/
+  -rw-r--r-- 0/0             519 2017-03-14 18:57 property-destinationDir/Hello.class
 ```

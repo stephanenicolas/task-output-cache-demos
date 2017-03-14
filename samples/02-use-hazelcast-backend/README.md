@@ -43,8 +43,9 @@ Let's run the build on the same machine. The default settings should work fine:
 
 ```text
 $ cd hazelcast-test
-$ ./gradlew -Dorg.gradle.cache.tasks=true clean run
-Task output caching is an incubating feature.
+$ ./gradlew --build-cache clean run
+Build cache is an incubating feature.
+Using Hazelcast node 'gradle-task-cache' at 127.0.0.1:5701 as local build cache, push is enabled.
 :clean
 :compileJava
 :processResources UP-TO-DATE
@@ -60,8 +61,9 @@ At this time, the results of `:compileJava` and `:jar` were stored in the cache.
 Let's run the build again:
 
 ```text
-$ ./gradlew -Dorg.gradle.cache.tasks=true clean run
-Task output caching is an incubating feature.
+$ ./gradlew --build-cache clean run
+Build cache is an incubating feature.
+Using Hazelcast node 'gradle-task-cache' at 127.0.0.1:5701 as local build cache, push is enabled.
 :clean
 :compileJava FROM-CACHE
 :processResources UP-TO-DATE
@@ -80,8 +82,9 @@ Let's try to use the stored results from another computer. We're going to specif
 Let's run the same build from a different machine:
 
 ```text
-$ ./gradlew -Dorg.gradle.cache.tasks=true -Dorg.gradle.caching.hazelcast.host=192.168.1.7 clean run
-Task output caching is an incubating feature.
+$ ./gradlew --build-cache -Dorg.gradle.caching.hazelcast.host=192.168.1.7 clean run
+Build cache is an incubating feature.
+Using Hazelcast node 'gradle-task-cache' at 127.0.0.1:5701 as local build cache, push is enabled.
 :clean
 :compileJava FROM-CACHE
 :processResources UP-TO-DATE
