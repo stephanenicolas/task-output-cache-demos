@@ -1,4 +1,3 @@
-import org.gradle.caching.http.HttpBuildCache
 
 buildCache {
   remote(HttpBuildCache) {
