@@ -2,7 +2,7 @@
 
 This scenario demonstrates the use of an HTTP cache backend service. You can use this approach to set up a local cache for testing (although you can also use the [built-in local cache implementation](../01-simple-local-caching) if you want to run some simple tests). It is also possible to share the HTTP cache between multiple machines running Gradle builds.
 
-Gradle comes with built-in support for HTTP cache backends.
+Gradle comes with built-in support for HTTP cache backends.  Gradle Enterprise will ship with its own [build cache backend](https://gradle.com/build-cache) to make it easier to use this across an entire organization.
 
 ## Preparations
 
@@ -14,12 +14,12 @@ We have a ready-to-use [Docker](https://www.docker.com) container that you can f
 
 Build the container in the [`http-server`](http-server) directory via:
 
-	$ cd http-server
+    $ cd http-server
     $ docker build --tag gradle-task-cache:0.1 .
 
 and run it via:
 
-	$ docker run --name gradle-task-cache -d -p 8885:80 gradle-task-cache:0.1
+    $ docker run --name gradle-task-cache -d -p 8885:80 gradle-task-cache:0.1
 
 ### Manual setup
 
@@ -35,7 +35,7 @@ In the below examples we are assuming you set up the Docker container locally. I
 
 ```text
 $ cd http-test
-$ ./gradlew -Dorg.gradle.cache.tasks=true clean run
+$ ./gradlew --build-cache clean run
 Task output caching is an incubating feature.
 :clean
 :compileJava
@@ -45,14 +45,14 @@ Task output caching is an incubating feature.
 Hello World!
 ```
 
-At this time, the results of `:compileJava` and `:jar` were stored in the cache.
+At this time, the results of `:compileJava` are stored in the cache.
 
-**Note:** We'll be running every build with the `clean` task included. If the build has already been executed, this removes any output present in the `build` directory. Had we not done this, the incremental build feature in Gradle could mark some tasks as `UP-TO-DATE`, which in turn would prevent the new task output cache feature to kick in.
+**Note:** We're running every build with `clean` so that the incremental build feature in Gradle would not label some tasks as `UP-TO-DATE`. This is only for demonstration purposes because this allows the new task output cache feature to kick in. For normal use, the build cache will help in situations where task outputs have been created by another build somewhere else (CI) or previously on your machine without a `clean`.
 
 Let's run the build again:
 
 ```text
-$ ./gradlew -Dorg.gradle.cache.tasks=true clean run
+$ ./gradlew --build-cache clean run
 Task output caching is an incubating feature.
 :clean
 :compileJava FROM-CACHE
@@ -66,11 +66,11 @@ Notice how `:compileJava` is now `FROM-CACHE`.
 
 ## Specifying credentials
 
-Currently Gradle's HTTP backend supports only HTTP Basic authentication. You can use `http://username:password@example.com/`-style URIs to specify HTTP Basic credentials, or you can pass them via `settings.gradle` like this:
+Currently Gradle's HTTP backend supports only HTTP Basic authentication. You can pass them via `settings.gradle` like this:
 
 ```groovy
 buildCache {
-	remote(org.gradle.caching.http.HttpBuildCache) {
+	remote(HttpBuildCache) {
 		url = "http://example.com/"
 		credentials {
 			username = "username"
@@ -83,7 +83,7 @@ buildCache {
 
 ## Troubleshooting
 
-If running from different computers does not have the desired result (i.e. `:compileJava` being in `FROM-CACHE` state), check if the version of Java the same on both computers.
+If running from different computers does not have the desired result (i.e. `:compileJava` being in `FROM-CACHE` state), check if the version of Java is the same on both computers.
 
 ## Keeping a lid on cache size
 
