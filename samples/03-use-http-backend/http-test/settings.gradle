@@ -1,10 +1,9 @@
-
 buildCache {
-  local {
-      enabled = false
-  }
-  remote(HttpBuildCache) {
-      url = System.getProperty("cache.url", "http://localhost:8885/")
-      push = true
-  }
+    local {
+        enabled = false
+    }
+    remote(HttpBuildCache) {
+        url = System.getProperty("cache.url", "http://localhost:8885/")
+        push = true
+    }
 }
