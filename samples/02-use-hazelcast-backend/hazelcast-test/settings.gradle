@@ -5,15 +5,8 @@ buildscript {
 	}
 
 	dependencies {
-	    classpath "org.gradle.caching.hazelcast:gradle-hazelcast-plugin:0.9"
+	    classpath "org.gradle.caching.hazelcast:gradle-hazelcast-plugin:0.11"
 	}
 }
 
 apply plugin: org.gradle.caching.hazelcast.HazelcastPlugin
-
-buildCache {
-	local(org.gradle.caching.hazelcast.HazelcastBuildCache) {
-		// Enable pushing explicitly until this is done automatically
-		push = true
-	}
-}
