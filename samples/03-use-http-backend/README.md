@@ -2,30 +2,16 @@
 
 This scenario demonstrates the use of an HTTP cache backend service. You can use this approach to set up a local cache for testing (although you can also use the [built-in local cache implementation](../01-simple-local-caching) if you want to run some simple tests). It is also possible to share the HTTP cache between multiple machines running Gradle builds.
 
-Gradle comes with built-in support for HTTP cache backends.  Gradle Enterprise will ship with its own [build cache backend](https://gradle.com/build-cache) to make it easier to use this across an entire organization.
+Gradle comes with built-in support for HTTP cache backends.
 
 ## Preparations
 
 We'll need an HTTP server that is capable of storing files uploaded via `PUT` requests.
+We have a ready-to-use [build cache node](https://hub.docker.com/r/gradle/build-cache-node/) Docker container that you can fire up with little extra hassle.
+The build cache node operates as an HTTP Gradle build cache, and can connect with [Gradle Enterprise](https://gradle.com/enterprise) for centralized management.
+Run it via:
 
-### Using Docker
-
-We have a ready-to-use [Docker](https://www.docker.com) container that you can fire up with little extra hassle.
-
-Build the container in the [`http-server`](http-server) directory via:
-
-    $ cd http-server
-    $ docker build --tag gradle-task-cache:0.1 .
-
-and run it via:
-
-    $ docker run --name gradle-task-cache -d -p 8885:80 gradle-task-cache:0.1
-
-### Manual setup
-
-If you don't want to use Docker, you can also install [nginx](https://www.nginx.com) manually. The attached [`nginx.conf`](http-server/nginx.conf) can serve as an example configuration.
-
-You can also use any other HTTP server as long as it supports uploading binaries via `PUT`.
+    $ docker run -d -p 8885:80 gradle/build-cache-node
 
 ## Running builds using the backend
 
@@ -84,19 +70,3 @@ buildCache {
 ## Troubleshooting
 
 If running from different computers does not have the desired result (i.e. `:compileJava` being in `FROM-CACHE` state), check if the version of Java is the same on both computers.
-
-## Keeping a lid on cache size
-
-For running the server for a longer time you may also want to add a cronjob for regularly cleaning up the cache:
-
-```text
-0 0 * * * /usr/sbin/tmpreaper 3d
-```
-
-This is using `tmpreaper` which can be installed on Debian systems via
-
-```text
-apt-get install tmpreaper
-```
-
-Its manual page can be found [here](http://manpages.ubuntu.com/manpages/xenial/man8/tmpreaper.8.html).
