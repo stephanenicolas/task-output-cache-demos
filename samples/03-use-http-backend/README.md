@@ -3,6 +3,7 @@
 This scenario demonstrates the use of an HTTP cache backend service. You can use this approach to set up a local cache for testing (although you can also use the [built-in local cache implementation](../01-simple-local-caching) if you want to run some simple tests). It is also possible to share the HTTP cache between multiple machines running Gradle builds.
 
 Gradle comes with built-in support for HTTP cache backends.
+Gradle Enterprise ships with its own [build cache backend](https://gradle.com/build-cache) to make it easier to use this across an entire organization.
 
 ## Preparations
 
@@ -11,7 +12,7 @@ We have a ready-to-use [build cache node](https://hub.docker.com/r/gradle/build-
 The build cache node operates as an HTTP Gradle build cache, and can connect with [Gradle Enterprise](https://gradle.com/enterprise) for centralized management.
 Run it via:
 
-    $ docker run -d -p 8885:80 gradle/build-cache-node
+    $ docker run --detach --publish 8885:80 gradle/build-cache-node
 
 ## Running builds using the backend
 
