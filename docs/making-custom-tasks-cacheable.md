@@ -20,7 +20,7 @@ To a lesser degree false negatives (i.e. not recognizing a cached result that wo
 
 The reuse of cached results depends on whether or not we can recognize a hit. Gradle by default takes the full path of input files into account when considering a task. This means that by default a task's results can only be reused if the absolute path of the inputs match. This means locally cached results will only be reused in the same Gradle project, and sharing results between hosts requires the builds to be ran from the exact same path.
 
-Most real-world tasks don't actually rely on the absolute path of their inputs, i.e. moving the input files around without changing thier contents does not influence the output of the task. In these cases it is possible to allow sharing cached results between builds executed from different paths by declaring the _path sensitivity_ of the task's input files. Using this information Gradle will normlaize the paths of the input files, thus ignoring parts or all of it when considering the task state, and ultimately generating the cache key.
+Most real-world tasks don't actually rely on the absolute path of their inputs, i.e. moving the input files around without changing their contents does not influence the output of the task. In these cases it is possible to allow sharing cached results between builds executed from different paths by declaring the _path sensitivity_ of the task's input files. Using this information Gradle will normalize the paths of the input files, thus ignoring parts or all of it when considering the task state, and ultimately generating the cache key.
 
 Path sensitivity can be specified via annotations on the task property:
 
